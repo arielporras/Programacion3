@@ -1,10 +1,11 @@
 package Ejer1;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class PuntoSolucion{
 	Punto puntoA, puntoB;
-	float distancia;
+	double distancia;
 	int instrucciones;
 	
 	PuntoSolucion(Punto a, Punto b){
@@ -16,19 +17,16 @@ class PuntoSolucion{
 	
 	void calcularDistancia(){
 		
-		distancia = Math.sqrt((a.x - b.x) * (a.x - b.x) 
-						+ (a.y - b.y) * (a.y - b.y));
+		distancia = Math.sqrt((puntoA.x - puntoB.x) * (puntoA.x - puntoB.x) 
+						+ (puntoA.y - puntoB.y) * (puntoA.y - puntoB.y));
 	}
 	
-	public static void quicksort(ArrayList<PuntoSolucion> lista, int izq, int der) {
+	public static void quicksort(List<PuntoSolucion> lista, int izq, int der) {
 
 	  PuntoSolucion pivote=lista.get(izq); // tomamos primer elemento como pivote
 	  int i=izq; // i realiza la búsqueda de izquierda a derecha
 	  int j=der; // j realiza la búsqueda de derecha a izquierda
 	  PuntoSolucion aux;
-	  
-	  // Contar instrucciones
-	  aux.instrucciones++;
 	 
 	  while(i<j){            // mientras no se crucen las búsquedas
 		 while(lista.get(i).distancia<=pivote.distancia && i<j) 
@@ -37,12 +35,14 @@ class PuntoSolucion{
 			 j--;         // busca elemento menor que pivote
 		 if (i<j) {                      // si no se han cruzado                      
 			 aux= lista.get(i);                  // los intercambia
-			 lista.get(i)=lista.get(j);
-			 lista.get(j)=aux;
+			 lista.set(i, lista.get(j));
+			// Contar instrucciones
+			 ++aux.instrucciones;
+			 lista.set(j, aux);
 		 }
 	   }
-	   lista.get(izq)=lista.get(j); // se coloca el pivote en su lugar de forma que tendremos
-	   lista.get(j)=pivote; // los menores a su izquierda y los mayores a su derecha
+	   lista.set(izq, lista.get(j)); // se coloca el pivote en su lugar de forma que tendremos
+	   lista.set(j, pivote); // los menores a su izquierda y los mayores a su derecha
 	   if(izq < j - 1)
 		  quicksort(lista,izq,j-1); // ordenamos subarray izquierdo
 	   if(j+1 <der)
@@ -62,7 +62,7 @@ class PuntoSolucion{
 
 public class Main {
 
-	public static List<PuntoSolucion> testGenerarLista(){
+	public static ArrayList<PuntoSolucion> testGenerarLista(){
 		
 		List<Punto> puntos = new ArrayList<Punto>();
 		puntos.add(new Punto(-2, -2));
@@ -94,7 +94,7 @@ public class Main {
 		SolucionEjercicio1 Solucion = new SolucionEjercicio1(Punto1, Punto2, cantidad); 
 		
 		// Generar lista debería aparear todos los puntos de una colección
-		List<PuntoSolucion> puntos = testGenerarLista();
+		ArrayList<PuntoSolucion> puntos = testGenerarLista();
 		
 		/*for (int i = 0; i < Puntos.size(); i++) {
 			  for (int j = i + 1; j < Puntos.size(); j++) {
@@ -109,13 +109,14 @@ public class Main {
 			    }
 			  }
 		}*/
-		PuntoSolucion minima = minimaDistanciaEntrePuntos(puntos);
+		PuntoSolucion minima = PuntoSolucion.minimaDistanciaEntrePuntos(puntos);
 		
-		System.out.println("la distancia minima es " + minima.distancia);
+		System.out.printf("La distancia minima es %.3f\n", minima.distancia);
 		System.out.println("Los puntos son: " + minima.puntoA + " y " + minima.puntoB);
-		System.out.println("La cantidad de pasos " + cantidad);
+		System.out.println("La cantidad de pasos " + minima.instrucciones);
 }
 
+	@SuppressWarnings("unused")
 	private static double distancia(int x, int y, int x2, int y2) {
 		return Math.sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
 	}}
